@@ -8,6 +8,7 @@ Created on Thu Oct 22 15:55:37 2015
 import string
 import threading
 import time
+import sys
 
 
 #Kriptolama icin kullandigimiz algoritma.
@@ -43,3 +44,24 @@ class myThread (threading.Thread):
                 fwrite.write(''.join(buffout))
                 threadLock.release()
             time.sleep(0.001)
+
+threads = []
+threadLock = threading.Lock()
+fread = open("metin.txt","r")
+path = "crypted_"+sys.argv[1]+"_"+sys.argv[2]+"_"+sys.argv[3]+".txt"
+fwrite = open(path,"w")
+
+#thread'larin olusturulmasi.
+for i in range(int(sys.argv[2])):
+    threadd = myThread(i,int(sys.argv[3]),fread,fwrite,int(sys.argv[1]))
+    threads.append(threadd)
+    threadd.start()
+
+#thread'larin olusturulacak dosyaya yazma sirasina gore bekletilmesi.
+for t in threads:
+    t.join()
+
+
+#yazma ve okuma islemleri icin kullandigimiz dosyalarin kapatilmasi.
+fwrite.close()
+fread.close()
