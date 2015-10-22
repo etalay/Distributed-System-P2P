@@ -1,0 +1,24 @@
+def run(self):
+		global i
+		while i<len(self.subtexts):
+			threadLock.acquire()
+			if i<len(self.subtexts):
+				encrypted = kripto(self.key,self.subtexts[i],self.keystring)
+				self.filepointer.write(encrypted)
+				print (self.threadname+" encrypts part no "+str(i))
+			i+=1			
+			threadLock.release()
+			time.sleep(0.000001)
+			
+			
+def run(self):
+		global ThreadControl
+		while ThreadControl<len(self.substring): #
+			threadLock.acquire()
+			if ThreadControl<len(self.substring):
+					crypto =caesar(substring[ThreadControl], shift_number)
+					self.file.write(crypto)
+					print "Thread adı :" +self.threadname+ "Thread No : {}".format(ThreadControl)
+				ThreadControl+=1			
+				threadLock.release()
+				time.sleep(0.000001)	
