@@ -34,3 +34,13 @@ class writeThread (threading.Thread):
                 self.clientSocket.close()
             else:
                 self.clientSocket.send(char)
+                
+                
+boolean = False
+#Socket'i tanımlıyıp host ve port adreslerini belirtiyoruz.
+s = socket.socket()
+host = "localhost"
+port = 12346
+s.connect((host,port))
+
+print "hey"+str(s.getpeername())
