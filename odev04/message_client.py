@@ -44,3 +44,13 @@ port = 12346
 s.connect((host,port))
 
 print "hey"+str(s.getpeername())
+
+#okuma thread'i oluşturma ve baslatma
+rThread = readThread(s)
+rThread.start()
+#yazma thread'i olusturma ve baslatma
+wThread = writeThread(s)
+wThread.start()
+#thread'lerin bekletilmesi
+rThread.join()
+wThread.join()
