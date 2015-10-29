@@ -58,3 +58,16 @@ port = 12346
 s.bind((host,port))
 s.listen(5)
 threads = []
+
+#Surekli bir baglanti olusturarak İstemci'nin her zaman cevap alabilecegi bir döngü gerceklestirdik. 
+while True:
+    print "Waiting for connection"
+    c,addr = s.accept()
+    print "A new connection from ",addr
+    threadCounter += 1
+    thread = socketThread(threadCounter,c,addr)
+    threads.append(thread)
+    thread.start()
+
+for t in threads:
+    t.join()
