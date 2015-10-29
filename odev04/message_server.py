@@ -46,3 +46,15 @@ class socketThread(threading.Thread):
                 print "Peki" + str(self.clientSocket.getpeername())
         print "Finishing Thread-" + str(self.threadID)
         threadd.join()
+
+
+#thread numaralarını saymasi icin bir sayac olusturduk.
+threadCounter = 0
+
+#socket olusturduktan sonra host ve port adreslerini girdik ve bu adresle iletisim halinde olmasi icin bir listener ekledik
+s = socket.socket()
+host = "localhost"
+port = 12346
+s.bind((host,port))
+s.listen(5)
+threads = []
