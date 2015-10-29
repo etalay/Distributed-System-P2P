@@ -17,3 +17,20 @@ class readThread (threading.Thread):
         print "Reading Thread is starting"
         while not boolean:
             print(self.clientSocket.recv(4096))
+            
+            #Yazma thread'i implementasyonu
+class writeThread (threading.Thread):
+    def __init__(self,clientSocket):
+        threading.Thread.__init__(self)
+        self.clientSocket = clientSocket
+    def run(self):
+        global boolean
+        print "\nWriting Thread is starting"
+        while not boolean:
+            char = raw_input("")
+            if char=="STOP":            #Kullanici "STOP" komutu girince program sonlanicak.
+                self.clientSocket.send(char)
+                boolean = True
+                self.clientSocket.close()
+            else:
+                self.clientSocket.send(char)
