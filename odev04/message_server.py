@@ -12,7 +12,7 @@ import socket
 import time
 from datetime import datetime
 
-#Bilgisayardan anlýk olarak saati almamýza yarayan timeClass implementasyonunu gerceklestirdik.
+#Bilgisayardan anlÃ½k olarak saati almamÃ½za yarayan timeClass implementasyonunu gerceklestirdik.
 class timeClass (threading.Thread):
     def __init__(self,clientSocket):
         threading.Thread.__init__(self)
@@ -24,3 +24,25 @@ class timeClass (threading.Thread):
             except:
                 break
             time.sleep(random.randint(20,30))
+            
+            
+            
+            #istemci ile beraber calÄ±sacak olan socketThread implementasyonunu gerceklestirdik.
+class socketThread(threading.Thread):
+    def __init__(self, threadID, clientSocket, clientAddr):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.clientSocket = clientSocket
+        self.clientAddr = clientAddr
+    def run(self):
+        threadd = timeClass(self.clientSocket)
+        threadd.start()
+        print "Starting Thread-" + str(self.threadID)
+        while True:
+            if self.clientSocket.recv(4096)=="STOP":
+                self.clientSocket.close()
+                break
+            else:
+                print "Peki" + str(self.clientSocket.getpeername())
+        print "Finishing Thread-" + str(self.threadID)
+        threadd.join()
