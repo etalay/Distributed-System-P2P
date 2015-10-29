@@ -43,6 +43,7 @@ host = "localhost"
 port = 12346
 s.connect((host,port))
 
+
 print "hey"+str(s.getpeername())
 
 #okuma thread'i oluşturma ve baslatma
