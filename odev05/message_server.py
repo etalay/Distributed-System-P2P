@@ -28,3 +28,34 @@ class LoggerThread (threading.Thread):
                 data = self.lQueue.get()
                 self.log(str(data)+"\n")
         self.log("Finish Logger Process!\n")
+#Mesaj gönderici Thread'i olusturduk.
+class SendThread (threading.Thread):
+    def __init__(self, name, cSocket, address, threadQueue, logQueue):
+        threading.Thread.__init__(self)
+        self.name = name
+        self.cSocket = cSocket
+        self.address = address
+        self.lQueue = logQueue
+        self.tQueue = threadQueue
+        self.nickname = ""
+    def run(self):
+        self.lQueue.put("Starting Send Thread of Process- " + str(self.name))
+        self.flag = False
+        while not self.flag:
+            if not self.tQueue.empty():
+                data = self.tQueue.get()
+                self.cSocket.send(data)
+                if data[0:3] == "BYE":
+                    self.flag = True
+                    self.cSocket.close()
+                elif data[0:3] == "HEL":
+                    self.nickname = data[4:]
+            flag = True
+            if self.nickname != "":
+                try:
+                    flag = (userlist[self.nickname]).empty()
+                except KeyError:
+                    pass
+            if not flag:
+                self.cSocket.send(userlist[self.nickname].get())
+        self.lQueue.put("Exiting Send Thread of Process- " + str(self.name))
