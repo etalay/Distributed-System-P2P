@@ -139,3 +139,33 @@ class RecvThread (threading.Thread):
             response = "ERR"
             queue_message = ("ERR",self.nick)
         return queue_message,response
+
+threadCounter = 0
+s = socket.socket()
+host = "localhost" """Sunucunun adresine gore degistirebilirsiniz. """
+port = 12345
+s.bind((host,port))
+s.listen(5)
+threads = []
+userlist = {}
+
+logQueue = Queue.Queue(10)
+thread = LoggerThread(logQueue,"log.txt")
+threads.append(thread)
+thread.start()
+
+while True:
+        print "Waiting for connection"
+        c,addr = s.accept()
+        print "A new connection from ",addr
+        threadQueue = Queue.Queue(10)
+        threadCounter += 1
+        thread = RecvThread(threadCounter,c,addr,logQueue,threadQueue)
+        thread2 = SendThread(threadCounter,c,addr,threadQueue,logQueue)
+        threads.append(thread)
+        threads.append(thread2)
+        thread.start()
+        thread2.start()
+
+for t in threads:
+        t.join()
