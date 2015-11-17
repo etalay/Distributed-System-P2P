@@ -21,3 +21,17 @@ class readThread (threading.Thread):
                 self.flag = True
                 self.clientSocket.close()
             print data
+
+class writeThread (threading.Thread):
+    def __init__(self,clientSocket):
+        threading.Thread.__init__(self)
+        self.clientSocket = clientSocket
+        self.flag = False
+    def run(self):
+        print "Starting writingThread"
+        while not self.flag:
+            var = raw_input("")
+            self.clientSocket.send(var)
+            if var[0:3] == "QUI":
+                self.clientSocket.close()
+                self.flag = True
