@@ -21,7 +21,7 @@ class readThread (threading.Thread):
                 self.flag = True
                 self.clientSocket.close()
             print data
-
+#Yazma thread implmentasyonunu gerceklestirdik.
 class writeThread (threading.Thread):
     def __init__(self,clientSocket):
         threading.Thread.__init__(self)
@@ -35,3 +35,19 @@ class writeThread (threading.Thread):
             if var[0:3] == "QUI":
                 self.clientSocket.close()
                 self.flag = True
+#Socket'i olusturduk
+s = socket.socket()
+#Server icin gerekli host ve port bilgilerini girdik.
+host = "178.233.19.205"
+port = 12345
+#Baglantiyi gerceklestirdik.
+s.connect((host,port))
+#Thread'leri olusturup baslattik.
+rThread = readThread(s)
+rThread.start()
+
+wThread = writeThread(s)
+wThread.start()
+
+rThread.join()
+wThread.join()
