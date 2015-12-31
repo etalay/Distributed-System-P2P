@@ -86,3 +86,18 @@ class testThread (threading.Thread):
             del COPY_LIST[self.point]
             temp.close()
         CONNECT_POINT_LIST = copy.deepcopy(COPY_LIST)
+
+# Arabulucunun server tarafı
+class serverThread (threading.Thread):
+    def __init__(self,testQ):
+        threading.Thread.__init__(self)
+        self.testQ = testQ
+    def run(self):
+        s = socket.socket()
+        s.bind(("",portNumber))
+        s.listen(5)
+        while True:
+            c,addr = s.accept()
+            print "A new connection from ",addr
+            thread = peerThread(c,addr,self.testQ)
+            thread.start()
