@@ -22,3 +22,17 @@ TEMP_SOCK_TIMEOUT = 10
 
 # tum liste icin bekleme
 TEST_WAIT_TIME = 10
+
+# peer client'larını test et
+class clientThread (threading.Thread):
+    def __init__(self,testQ):
+        threading.Thread.__init__(self)
+        self.testQ = testQ
+    def run(self):
+        tlThread = testlistThread()
+        tlThread.start()
+        while True:
+            if not self.testQ.empty():
+                peer = self.testQ.get()
+                tThread = testThread(peer)
+                tThread.start()
