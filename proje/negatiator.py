@@ -10,3 +10,15 @@ import copy
 import threading
 import socket
 import Queue
+
+#Baglanti listesi
+CONNECT_POINT_LIST = {}
+
+# Arabulucu port numarasi
+portNumber = 12345
+
+# Soket zamanasimi 
+TEMP_SOCK_TIMEOUT = 10
+
+# tum liste icin bekleme
+TEST_WAIT_TIME = 10
