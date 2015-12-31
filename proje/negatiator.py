@@ -36,3 +36,16 @@ class clientThread (threading.Thread):
                 peer = self.testQ.get()
                 tThread = testThread(peer)
                 tThread.start()
+
+#her TEST_WAIT_TIME sonunda listeyi test et
+class testlistThread (threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+    def run(self):
+        while True:
+            time.sleep(TEST_WAIT_TIME)
+            for point in CONNECT_POINT_LIST:
+                tThread = testThread(point)
+                tThread.start()
+            print CONNECT_POINT_LIST
+
