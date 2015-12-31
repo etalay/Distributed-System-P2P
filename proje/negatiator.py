@@ -101,3 +101,72 @@ class serverThread (threading.Thread):
             print "A new connection from ",addr
             thread = peerThread(c,addr,self.testQ)
             thread.start()
+
+# peer'lari yonetmek icin
+class peerThread (threading.Thread):
+    def __init__(self,c,addr,testQ):
+        threading.Thread.__init__(self)
+        self.socket = c
+        self.addr = addr
+        self.testQ = testQ
+        self.flagAuth = False
+        self.flagOK = True
+    def run(self):
+        global CONNECT_POINT_LIST
+        self.socket.settimeout(TEMP_SOCK_TIMEOUT*2)
+        for i in range(2):
+            if self.flagOK:
+                try:
+                    message = self.socket.recv(4096)
+                    self.parser(message)
+                except socket.timeout:
+                    self.socket.close()
+                    self.flagOK = False
+
+    def parser(self,message):
+        if message[:5] == "REGME":
+            try:
+                host,port = str.split(message[6:],':',1)
+            except:
+                self.socket.send("REGER")
+                self.flagOK = False
+            if self.flagOK:
+                if host+port in CONNECT_POINT_LIST:
+                    if CONNECT_POINT_LIST[host+port][4]=="S":
+                        CONNECT_POINT_LIST[host+port][2] = str(time.time())
+                        self.socket.send("REGOK "+str(CONNECT_POINT_LIST[host+port][2]))
+                        self.flagOK = True
+                        self.flagAuth = True
+
+                else:
+                    self.socket.send("REGWA")
+                    self.flagOK = False
+                    self.socket.close()
+                    l=[]
+                    l.append(host)
+                    l.append(port)
+                    l.append(str(time.time()))
+                    l.append(" ")
+                    l.append("W")
+                    CONNECT_POINT_LIST[host+port]=l
+                    self.testQ.put(host+port)
+
+        elif message[:5] == "GETNL":
+            if self.flagAuth:
+                self.socket.send("NLIST BEGIN")
+                for point in CONNECT_POINT_LIST:
+                    self.socket.send(CONNECT_POINT_LIST[point][0]+":"+CONNECT_POINT_LIST[point][1]+":"+CONNECT_POINT_LIST[point][2]+":"+CONNECT_POINT_LIST[point][3]+"\n")
+                self.socket.send("NLIST END")
+            else:
+                self.socket.send("REGER")
+                self.flagOK = False
+                self.socket.close()
+
+        elif message == "HELLO":
+            self.socket.send("SALUT N")
+            self.flagOK = False
+
+        else:
+            self.socket.send("CMDER")
+            self.flagOK = False
+            self.socket.close()
