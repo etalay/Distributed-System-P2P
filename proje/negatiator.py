@@ -170,3 +170,11 @@ class peerThread (threading.Thread):
             self.socket.send("CMDER")
             self.flagOK = False
             self.socket.close()
+
+testQ = Queue.Queue(10)
+
+cThread = clientThread(testQ)
+cThread.start()
+
+sThread = serverThread(testQ)
+sThread.start()
