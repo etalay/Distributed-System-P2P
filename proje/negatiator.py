@@ -49,3 +49,40 @@ class testlistThread (threading.Thread):
                 tThread.start()
             print CONNECT_POINT_LIST
 
+
+# Test thread
+class testThread (threading.Thread):
+    def __init__(self,point):
+        threading.Thread.__init__(self)
+        self.point = point
+    def run(self):
+        global CONNECT_POINT_LIST
+        temp = socket.socket()
+        temp.settimeout(TEMP_SOCK_TIMEOUT)
+        COPY_LIST = copy.deepcopy(CONNECT_POINT_LIST)
+        try:
+            temp.connect((COPY_LIST[self.point][0],int(COPY_LIST[self.point][1])))
+            temp.send("HELLO")
+            try:
+                response = temp.recv(4096)
+                if response[:5] != "SALUT":
+                    temp.send("CMDER")
+                    temp.close()
+                    if self.point in COPY_LIST:
+                        del COPY_LIST[self.point]
+                else:
+                    if COPY_LIST[self.point][4]=="W":
+                        COPY_LIST[self.point][2] = str(time.time())
+                        COPY_LIST[self.point][4] = "S"
+                        COPY_LIST[self.point][3] = response[6:]
+                    elif COPY_LIST[self.point][4]=="S":
+                        COPY_LIST[self.point][2] = str(time.time())
+                    temp.send("CLOSE")
+                    temp.close()
+            except socket.timeout:
+                del COPY_LIST[self.point]
+                temp.close()
+        except:
+            del COPY_LIST[self.point]
+            temp.close()
+        CONNECT_POINT_LIST = copy.deepcopy(COPY_LIST)
