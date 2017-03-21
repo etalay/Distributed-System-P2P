@@ -1,1 +1,1 @@
-Dağıtık Sistemler Ödev ve Projeleri
+Distributed System University Cursus Work
